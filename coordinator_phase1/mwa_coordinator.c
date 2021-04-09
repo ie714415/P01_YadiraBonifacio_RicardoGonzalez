@@ -156,7 +156,7 @@ void main_task(uint32_t param)
         Phy_Init();
         RNG_Init(); /* RNG must be initialized after the PHY is Initialized */
         MAC_Init();
-        
+
         /* Bind to MAC layer */
         macInstance = BindToMAC( (instanceId_t)0 );
         Mac_RegisterSapHandlers( MCPS_NWK_SapHandler, MLME_NWK_SapHandler, macInstance );
@@ -397,8 +397,6 @@ void AppThread(uint32_t argument)
   }/* while(1) */
 }
 
-
-
 /************************************************************************************
 *************************************************************************************
 * Private functions
@@ -544,7 +542,7 @@ static void App_HandleScanEdConfirm(nwkMessage_t *pMsg)
       }      
 #else      
   /* Select default channel */
-  mLogicalChannel = 11;
+  mLogicalChannel = 18;
   
   /* Search for the channel with least energy */
   for(idx=0, n=0; n<16; n++)
@@ -803,25 +801,54 @@ static uint8_t App_HandleMlmeInput(nwkMessage_t *pMsg, uint8_t appInstance)
 ******************************************************************************/
 static void App_HandleMcpsInput(mcpsToNwkMessage_t *pMsgIn, uint8_t appInstance)
 {
-  switch(pMsgIn->msgType)
-  {
-    /* The MCPS-Data confirm is sent by the MAC to the network
+	uint8_t counter;
+	switch(pMsgIn->msgType)
+	{
+	/* The MCPS-Data confirm is sent by the MAC to the network
        or application layer when data has been sent. */
-  case gMcpsDataCnf_c:
-    if(mcPendingPackets)
-      mcPendingPackets--;
-    break;
+	case gMcpsDataCnf_c:
+		if(mcPendingPackets)
+			mcPendingPackets--;
+		break;
 
-  case gMcpsDataInd_c:
-    /* The MCPS-Data indication is sent by the MAC to the network
+	case gMcpsDataInd_c:
+		/* The MCPS-Data indication is sent by the MAC to the network
        or application layer when data has been received. We simply
        copy the received data to the UART. */
-    Serial_SyncWrite( interfaceId,pMsgIn->msgData.dataInd.pMsdu, pMsgIn->msgData.dataInd.msduLength );
-    break;
-    
-  default:
-    break;
-  }
+		Serial_SyncWrite( interfaceId,pMsgIn->msgData.dataInd.pMsdu, pMsgIn->msgData.dataInd.msduLength );
+
+		TurnOffLeds();
+
+		counter = pMsgIn->msgData.dataInd.pMsdu[pMsgIn->msgData.dataInd.msduLength - 1] - '0';
+		switch(counter)
+		{
+		case 0:
+			Led1On();
+			break;
+		case 1:
+			Led2On();
+			break;
+		case 2:
+			Led3On();
+			break;
+		case 3:
+			TurnOnLeds();
+			break;
+		default:
+			break;
+		}
+
+		Serial_Print(interfaceId,"\r\nAddress: 0x",gAllowToBlock_d);
+		Serial_PrintHex(interfaceId, (uint8_t*)&pMsgIn->msgData.dataInd.srcAddr, 2, gPrtHexNoFormat_c);
+		Serial_Print(interfaceId, "\r\nLQI: ", gAllowToBlock_d);
+		Serial_PrintHex(interfaceId, (uint8_t*)&pMsgIn->msgData.dataInd.mpduLinkQuality, 1, gPrtHexNoFormat_c);
+		Serial_Print(interfaceId, "\r\nPayload size: ", gAllowToBlock_d);
+		Serial_PrintHex(interfaceId, (uint8_t*)&pMsgIn->msgData.dataInd.msduLength, 1, gPrtHexNoFormat_c);
+		Serial_Print(interfaceId,"\r\n\n",gAllowToBlock_d);
+		break;
+	default:
+		break;
+	}
 }
 
 /******************************************************************************

@@ -35,10 +35,10 @@
 #define mMacExtendedAddress_c    (0x1111111111111111)
 
 /* Set the Coordinator short address */ 
-#define mDefaultValueOfShortAddress_c     0xCAFE
+#define mDefaultValueOfShortAddress_c     0x0000
 
 /* Set the Coordinator PanID */ 
-#define mDefaultValueOfPanId_c            0xBEEF
+#define mDefaultValueOfPanId_c            0x0808
 
 /* Maximum number of outstanding packets */
 #define mDefaultValueOfMaxPendingDataPackets_c 2
