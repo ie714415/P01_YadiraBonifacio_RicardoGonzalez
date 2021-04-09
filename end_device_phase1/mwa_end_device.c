@@ -44,6 +44,9 @@
 #include "board.h"
 #include "fsl_os_abstraction.h"
 
+/* Custom Headers */
+#include "MyNewTask.h"
+
 /************************************************************************************
 *************************************************************************************
 * Private macros
@@ -65,6 +68,9 @@
   #define maMyAddress_ID_c         0x0011
   #define mAddrMode_ID_c           0x0012
 #endif
+
+#define BUTTON_ONE (1U)
+#define BUTTON_TWO (2U)
 
 /************************************************************************************
 *************************************************************************************
@@ -206,6 +212,9 @@ void main_task(uint32_t param)
         Phy_Init();
         RNG_Init(); /* RNG must be initialized after the PHY is Initialized */
         MAC_Init();
+
+        MyTask_Init(); /* INIT MY NEW TASK */
+
 #if mEnterLowPowerWhenIdle_c
         PWR_Init();
         PWR_DisallowDeviceToSleep();
@@ -553,6 +562,7 @@ void AppThread(osaTaskParam_t argument)
                             TMR_StartLowPowerTimer(mTimer_c, gTmrSingleShotTimer_c ,mPollInterval, AppPollWaitTimeout, NULL );
                             /* Go to the listen state */
                             gState = stateListen;
+                            MyTaskTimer_Start(); /*Start LED flashing with your task*/
                             OSA_EventSet(mAppEvent, gAppEvtDummyEvent_c); 
                         }        
                         else 
@@ -1196,6 +1206,22 @@ static void App_HandleKeys
         {
             LED_StopFlashingAllLeds();
             OSA_EventSet(mAppEvent, gAppEvtDummyEvent_c);
+        }
+        else
+        {
+        	if(events == gKBD_EventSW1_c)
+        	{
+        		MyTaskTimer_Stop(); /* STOP Timer from MY NEW TASK*/
+        		MyTask_ButtonEvent(BUTTON_ONE);
+        		MyTaskTimer_Start(); /*Start LED flashing with your task*/
+        	}
+        	else if(events == gKBD_EventSW2_c)
+        	{
+        		MyTaskTimer_Stop(); /* STOP Timer from MY NEW TASK*/
+        		MyTask_ButtonEvent(BUTTON_TWO);
+        		MyTaskTimer_Start(); /*Start LED flashing with your task*/
+        	}
+        	else {}
         }
     }
 #endif
