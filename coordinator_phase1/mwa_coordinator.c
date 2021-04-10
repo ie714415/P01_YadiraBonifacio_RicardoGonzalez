@@ -823,10 +823,10 @@ static void App_HandleMcpsInput(mcpsToNwkMessage_t *pMsgIn, uint8_t appInstance)
 		switch(counter)
 		{
 		case 0:
-			Led1On();
+			Led2On();//correcto
 			break;
 		case 1:
-			Led2On();
+			Led4On();
 			break;
 		case 2:
 			Led3On();
