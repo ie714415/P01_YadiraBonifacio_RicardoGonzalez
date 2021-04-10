@@ -542,23 +542,23 @@ static void App_HandleScanEdConfirm(nwkMessage_t *pMsg)
       }      
 #else      
   /* Select default channel */
-  mLogicalChannel = 18;
+  mLogicalChannel = 0x18;
   
   /* Search for the channel with least energy */
-  for(idx=0, n=0; n<16; n++)
-  {
+  //for(idx=0, n=0; n<16; n++)
+  //{
       /* Channel numbering is 11 to 26 both inclusive */
-      Channel = n + 11;
-      if( (chMask & (1 << Channel)) )
-      {
-          if( pEdList[idx] < minEnergy )
-          {
-              minEnergy = pEdList[idx];
-              mLogicalChannel = Channel;
-          }
-          idx++;
-      }
-  }
+    //  Channel = n + 11;
+    // if( (chMask & (1 << Channel)) )
+    //  {
+    //      if( pEdList[idx] < minEnergy )
+    //      {
+    //          minEnergy = pEdList[idx];
+     //         mLogicalChannel = Channel;
+     //     }
+      //    idx++;
+      //}
+  //}
 #endif /* gPHY_802_15_4g_d */     
 
   chMask &= ~(1 << mLogicalChannel);
