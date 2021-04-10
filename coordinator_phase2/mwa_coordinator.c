@@ -545,7 +545,7 @@ static void App_HandleScanEdConfirm(nwkMessage_t *pMsg)
       }      
 #else      
   /* Select default channel */
-  mLogicalChannel = 18;
+  mLogicalChannel = 0x18;
   
 //  /* Search for the channel with least energy */
 //  for(idx=0, n=0; n<16; n++)
