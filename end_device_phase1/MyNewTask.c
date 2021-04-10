@@ -49,10 +49,10 @@ void My_Task(osaTaskParam_t argument)
 				Led2On();
 				break;
 			case 1:
-				Led3On();
+				Led4On();
 				break;
 			case 2:
-				Led4On();
+				Led3On();
 				break;
 			case 3:
 				TurnOnLeds();
@@ -90,10 +90,10 @@ void My_Task(osaTaskParam_t argument)
 			switch(counter)
 			{
 			case 1:
-				Led3On();
+				Led4On();
 				break;
 			case 2:
-				Led4On();
+				Led3On();
 				break;
 			default:
 				break;
